@@ -1,10 +1,12 @@
 const TelegramBot = require('node-telegram-bot-api');
+const axios = require('axios');
 require('dotenv').config();
 
+// Railway-da BOT_TOKEN variables bo'limidan olinadi
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
-const axios = require('axios');
-const API = 'http://localhost:5000/api';
+// MUHIM: Localhost emas, Railway-dagi backend manzilingizni yozing
+const API = 'https://kkm-backend-production.up.railway.app/api';
 
 bot.onText(/\/start/, (msg) => {
   const user = msg.from;
@@ -15,7 +17,9 @@ bot.onText(/\/start/, (msg) => {
     firstName: user.first_name,
     lastName: user.last_name || '',
     username: user.username || ''
-  }).catch(err => console.log(err.message));
+  })
+  .then(() => console.log(`👤 Foydalanuvchi saqlandi: ${user.first_name}`))
+  .catch(err => console.error('API Error (save):', err.message));
 
   bot.sendMessage(msg.chat.id, 
     `Salom ${user.first_name}! 👋\n\nKasbiy Ko'nikmalar Markaziga xush kelibsiz!\n\nTelefon raqamingizni ulang:`,
@@ -43,12 +47,12 @@ bot.on('contact', (msg) => {
     username: msg.from.username || '',
     phone
   }).then(() => {
-    bot.sendMessage(msg.chat.id, '✅ Telefon raqam saqlandi!', {
+    bot.sendMessage(msg.chat.id, '✅ Rahmat! Telefon raqamingiz muvaffaqiyatli saqlandi.', {
       reply_markup: {
         remove_keyboard: true
       }
     });
-  }).catch(err => console.log(err.message));
+  }).catch(err => console.error('API Error (contact):', err.message));
 });
 
-console.log('🤖 Bot ishlamoqda...');
+console.log('🤖 Bot Railway-da ishga tushdi...');
