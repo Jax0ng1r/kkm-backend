@@ -7,11 +7,7 @@ const app = express();
 
 // 1. CORS sozlamasini to'g'irlash
 app.use(cors({
-  origin: [
-    'https://sizning-saytingiz.netlify.app', // BU YERGA Netlify manzilingizni yozing
-    'http://localhost:5173',                  // Lokal admin panel uchun
-    'http://localhost:5174'
-  ],
+  origin: true, // Hozircha hamma joydan (localhost va netlify) ruxsat berish uchun
   credentials: true
 }));
 
